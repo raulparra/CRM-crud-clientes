@@ -5,18 +5,28 @@ import { Formulario } from "./Formulario";
 export const action = async( { request }) =>{
   
   const formData = await request.formData();
+  
   const datos = Object.fromEntries(formData)//--> trae todo los datos del formulario
+  
+  const email = formData.get('email')
 
   const errores =[]
   if (Object.values(datos).includes('')){
     errores.push('Todos los campos son obligatorios')
   }
-  
-  if (Object.keys(errores).length) {
-      console.log('Sí hay errores');
+
+  let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])"); 
+  if (!regex.test(email)) {
+    errores.push('El email no es válido')
   }
-  return errores
+  //Retornar si hay errores
+  if (Object.keys(errores).length) {
+     
+    return errores
+  }
 }
+
+
 
 export const NuevoCliente = () => {
   
@@ -37,7 +47,7 @@ export const NuevoCliente = () => {
 
       <div className="bg-white shadow rounded-md md:w3/4 mx-auto px-5 py-10 mt-10">
         {errores?.length && errores.map( ( error, i ) => <Error key={i}>{ error }</Error> )}
-        <Form method="POST" >
+        <Form method="POST"  >
           <Formulario/>
           <input type="submit" className=" mt-5 w-full bg-[#273746] hover:bg-[#316ba2] p-3 uppercase font-bold text-white text-lg" />
         </Form>
